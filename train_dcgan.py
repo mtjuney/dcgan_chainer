@@ -102,9 +102,12 @@ for i in tqdm(range(args.iteration)):
     L_dis.backward()
     o_dis.update()
 
-    # gen_loss = L_gen.data
-    # dis_loss = L_dis.data
+    gen_loss = L_gen.data
+    dis_loss = L_dis.data
 
+    if args.gpu >= 0:
+        gen_loss = gen_loss.get()
+        dis_loss = dis_loss.get()
 
     if i % args.save_interval == 0:
         plt.rcParams['figure.figsize'] = (16.0, 2.0)
@@ -123,6 +126,8 @@ for i in tqdm(range(args.iteration)):
             plt.gray()
             plt.axis('off')
         plt.savefig(str(save_image_dir / 'vis_{}'.format(i)))
+
+        print('gen_loss {} / dis_loss {}'.format(gen_loss, dis_loss))
 
         if args.model_save:
             serializers.save_hdf5(str(save_model_dir / 'dis_{}'.format(i)), dis)
