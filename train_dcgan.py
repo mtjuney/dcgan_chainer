@@ -86,13 +86,13 @@ for i in tqdm(range(args.iteration)):
     z = Variable(xp.random.uniform(-1, 1, (batchsize, nz)).astype(np.float32))
     x = gen(z)
     yl = dis(x)
-    L_gen = F.softmax_cross_entropy(yl, Variable(np.zeros(batchsize, dtype=np.int32)))
-    L_dis = F.softmax_cross_entropy(yl, Variable(np.ones(batchsize, dtype=np.int32)))
+    L_gen = F.softmax_cross_entropy(yl, Variable(xp.zeros(batchsize, dtype=np.int32)))
+    L_dis = F.softmax_cross_entropy(yl, Variable(xp.ones(batchsize, dtype=np.int32)))
 
     # train from true image
     x2 = Variable(x2)
     yl2 = dis(x2)
-    L_dis += F.softmax_cross_entropy(yl2, Variable(np.zeros(batchsize, dtype=np.int32)))
+    L_dis += F.softmax_cross_entropy(yl2, Variable(xp.zeros(batchsize, dtype=np.int32)))
 
     o_gen.zero_grads()
     L_gen.backward()
