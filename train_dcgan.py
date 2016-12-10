@@ -2,6 +2,8 @@ import argparse
 import numpy as np
 from pathlib import Path
 from PIL import Image
+import matplotlib as mpl
+mpl.use('Agg')
 import matplotlib.pyplot as plt
 from tqdm import tqdm
 
