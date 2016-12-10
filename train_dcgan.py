@@ -28,6 +28,10 @@ parser.add_argument('--save_dir', '-s', default='out/save', type=str)
 parser.add_argument('--gpu', '-g', default=-1, type=int)
 parser.add_argument('--test', '-t', action='store_true')
 parser.add_argument('--model_save', '-ms', action='store_true')
+parser.add_argument('--model_gen', '-mg', default=None)
+parser.add_argument('--model_dis', '-md', default=None)
+parser.add_argument('--optim_gen', '-og', default=None)
+parser.add_argument('--optim_dis', '-od', default=None)
 args = parser.parse_args()
 
 nz = 100
@@ -54,6 +58,11 @@ for i in range(len(image_paths) - 1):
 gen = Generator(nz)
 dis = Discriminator(nz)
 
+if args.model_gen is not None:
+    serializers.load_hdf5(args.model_gen, gen)
+if args.model_dis is not None:
+    serializers.load_hdf5(args.model_dis, dis)
+
 if args.gpu >= 0:
     cuda.get_device(args.gpu).use()
     gen.to_gpu()
@@ -67,6 +76,11 @@ o_gen.setup(gen)
 o_dis.setup(dis)
 o_gen.add_hook(chainer.optimizer.WeightDecay(0.00001))
 o_dis.add_hook(chainer.optimizer.WeightDecay(0.00001))
+
+if args.optim_gen is not None:
+    serializers.load_hdf5(args.optim_gen, o_gen)
+if args.optim_dis is not None:
+    serializers.load_hdf5(args.optim_dis, o_dis)
 
 
 # zvis = np.matrix(np.identity(nz)).astype(np.float32)
